@@ -75,7 +75,7 @@ const OthersProfile = () => {
          console.error(err.response.data)
       }
    }
-   console.log('profile.user:', profile)
+
    return (
       <Fragment>
          {state.loading === false ? (

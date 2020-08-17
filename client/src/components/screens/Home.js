@@ -274,63 +274,12 @@ const Home = () => {
                                              <i
                                                 className='material-icons delete'
                                                 style={{ float: 'right' }}
-                                                onClick={handlePostOpen}
+                                                onClick={() => {
+                                                   deletePost(item._id)
+                                                }}
                                              >
                                                 delete
                                              </i>
-                                             {/* Delete post modal */}
-                                             <Modal
-                                                aria-labelledby='transition-modal-title'
-                                                aria-describedby='transition-modal-description'
-                                                className={classes.modal}
-                                                open={postOpen}
-                                                onClose={handlePostClose}
-                                                closeAfterTransition
-                                                BackdropComponent={Backdrop}
-                                                BackdropProps={{
-                                                   timeout: 500,
-                                                }}
-                                             >
-                                                <Fade in={postOpen}>
-                                                   <div
-                                                      className={classes.paper}
-                                                      style={{
-                                                         display: 'flex',
-                                                         flexDirection:
-                                                            'column',
-                                                      }}
-                                                   >
-                                                      <h3
-                                                         style={{
-                                                            marginLeft: 'auto',
-                                                            marginRight: 'auto',
-                                                         }}
-                                                      >
-                                                         Delete Post
-                                                      </h3>
-                                                      <p
-                                                         style={{
-                                                            marginLeft: 'auto',
-                                                            marginRight: 'auto',
-                                                         }}
-                                                      >
-                                                         Are you sure?
-                                                      </p>
-                                                      <button
-                                                         className='btn waves-effect waves-light #64b5f6 blue darken-1'
-                                                         onClick={() => {
-                                                            deletePost(item._id)
-                                                         }}
-                                                         style={{
-                                                            marginLeft: 'auto',
-                                                            marginRight: 'auto',
-                                                         }}
-                                                      >
-                                                         Delete
-                                                      </button>
-                                                   </div>
-                                                </Fade>
-                                             </Modal>
                                           </Fragment>
                                        )}
 
@@ -368,79 +317,15 @@ const Home = () => {
                                                             marginBottom:
                                                                '-1px',
                                                          }}
-                                                         onClick={handleOpen}
+                                                         onClick={() => {
+                                                            deleteComment(
+                                                               item._id,
+                                                               comment._id
+                                                            )
+                                                         }}
                                                       >
                                                          delete
                                                       </i>
-                                                      {/* Delete comment modal */}
-                                                      <Modal
-                                                         aria-labelledby='transition-modal-title'
-                                                         aria-describedby='transition-modal-description'
-                                                         className={
-                                                            classes.modal
-                                                         }
-                                                         open={open}
-                                                         onClose={handleClose}
-                                                         closeAfterTransition
-                                                         BackdropComponent={
-                                                            Backdrop
-                                                         }
-                                                         BackdropProps={{
-                                                            timeout: 500,
-                                                         }}
-                                                      >
-                                                         <Fade in={open}>
-                                                            <div
-                                                               className={
-                                                                  classes.paper
-                                                               }
-                                                               style={{
-                                                                  display:
-                                                                     'flex',
-                                                                  flexDirection:
-                                                                     'column',
-                                                               }}
-                                                            >
-                                                               <h3
-                                                                  style={{
-                                                                     marginLeft:
-                                                                        'auto',
-                                                                     marginRight:
-                                                                        'auto',
-                                                                  }}
-                                                               >
-                                                                  Delete Comment
-                                                               </h3>
-                                                               <p
-                                                                  style={{
-                                                                     marginLeft:
-                                                                        'auto',
-                                                                     marginRight:
-                                                                        'auto',
-                                                                  }}
-                                                               >
-                                                                  Are you sure?
-                                                               </p>
-                                                               <button
-                                                                  className='btn waves-effect waves-light #64b5f6 blue darken-1'
-                                                                  onClick={() => {
-                                                                     deleteComment(
-                                                                        item._id,
-                                                                        comment._id
-                                                                     )
-                                                                  }}
-                                                                  style={{
-                                                                     marginLeft:
-                                                                        'auto',
-                                                                     marginRight:
-                                                                        'auto',
-                                                                  }}
-                                                               >
-                                                                  Delete
-                                                               </button>
-                                                            </div>
-                                                         </Fade>
-                                                      </Modal>
                                                    </Fragment>
                                                 )}
                                              </h6>

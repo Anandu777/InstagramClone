@@ -103,7 +103,7 @@ const CreatePost = () => {
                   <div>
                      <input
                         type='text'
-                        placeholder='Body'
+                        placeholder='Description'
                         value={body}
                         onChange={(e) => setBody(e.target.value)}
                      />

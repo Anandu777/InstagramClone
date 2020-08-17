@@ -41,7 +41,9 @@ router.patch(
          return res.status(400).json({ errors: errors.array() })
       }
       try {
-         await User.updateOne({ photo: req.body.url })
+         const user = await User.findById(req.user._id)
+         user.photo = req.body.url
+         await user.save()
          res.json({ msg: 'Profile picture updated!' })
       } catch (err) {
          console.error(err.message)
