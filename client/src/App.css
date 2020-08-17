@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap');
+
+a {
+   color: #000 !important;
+}
+
+.brand-logo,
+h2 {
+   font-family: 'Grand Hotel', cursive;
+}
+
+.mycard {
+   margin-top: 30px;
+}
+
+.Navbar__icon:hover {
+   cursor: pointer;
+}
+
+.auth-card {
+   padding: 20px;
+   text-align: center;
+   max-width: 400px;
+   margin: 10px auto;
+}
+
+.input-field input[type='text']:focus {
+   border-bottom: 1px solid rgb(8, 93, 252) !important;
+   box-shadow: 0 1px 0 0 rgb(8, 93, 252) !important;
+}
+
+.input-field input[type='password']:focus {
+   border-bottom: 1px solid rgb(8, 93, 252) !important;
+   box-shadow: 0 1px 0 0 rgb(8, 93, 252) !important;
+}
+
+.gallery {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: space-around;
+}
+
+.item {
+   width: 30%;
+}
+
+.home-card {
+   max-width: 500px;
+   height: max-content;
+   margin: 26px auto;
+}
+
+#toast-container {
+   top: 30px !important;
+   right: 20px !important;
+   left: auto !important;
+}
+
+@media (max-width: 560px) {
+   #toast-container {
+      top: 30px !important;
+      right: auto !important;
+      left: auto !important;
+   }
+}
+
+.like {
+   color: rgb(236, 186, 186);
+}
+
+.like:hover {
+   cursor: pointer;
+}
+
+.unlike:hover {
+   cursor: pointer;
+}
+
+.delete:hover {
+   cursor: pointer;
+}
+
+.Home__name:hover {
+   cursor: pointer;
+}
+
+.Home__nopost {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.spinner {
+   position: absolute;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   margin: auto;
+}
+
+@media (max-width: 576px) {
+   .Navbar__hide {
+      display: none !important;
+   }
+}
+
+@media (min-width: 576px) {
+   .Navbar__icons--hide {
+      display: none !important;
+   }
+}
+
+@media (max-width: 576px) {
+   .home-image {
+      width: 380px;
+      height: 280px;
+   }
+}
+
+@media (max-width: 450px) {
+   .home-image {
+      width: 340px;
+      height: 280px;
+   }
+}
+
+@media (max-width: 380px) {
+   .home-image {
+      width: 300px;
+      height: 280px;
+   }
+}
+
+@media (max-width: 320px) {
+   .home-image {
+      width: 250px;
+      height: 250px;
+   }
+}
+
+@media (max-width: 300px) {
+   .home-image {
+      width: 210px;
+      height: 230px;
+   }
+}
+
+.Settings_link {
+   color: #fff !important;
+}
+
+@media (max-width: 576px) {
+   .Profile__image {
+      width: 120px !important;
+      height: 120px !important;
+      border-radius: 50% !important;
+   }
+
+   .Profile__button {
+      width: 120px;
+   }
+}
+
+@media (max-width: 576px) {
+   .OthersProfile__image {
+      width: 120px !important;
+      height: 120px !important;
+      border-radius: 50% !important;
+   }
+}
