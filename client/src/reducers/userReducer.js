@@ -5,8 +5,11 @@ import {
    ALLPOSTS,
    POST_ERROR,
    MYPOSTS,
+   OTHERSPOSTS,
    SET_LOADING,
    REMOVE_LOADING,
+   CLEAR_MYPOSTS,
+   CLEAR_OTHERSPOSTS,
 } from '../actions/actionTypes'
 
 export const initialState = {
@@ -15,6 +18,7 @@ export const initialState = {
    loading: false,
    allposts: [],
    myposts: [],
+   othersposts: [],
 }
 
 export const reducer = (state = initialState, action) => {
@@ -40,6 +44,11 @@ export const reducer = (state = initialState, action) => {
             ...state,
             myposts: payload,
          }
+      case OTHERSPOSTS:
+         return {
+            ...state,
+            othersposts: payload,
+         }
       case CLEAR_USER:
          return {
             ...state,
@@ -54,6 +63,16 @@ export const reducer = (state = initialState, action) => {
             ...state,
             allposts: [],
             myposts: [],
+         }
+      case CLEAR_MYPOSTS:
+         return {
+            ...state,
+            myposts: [],
+         }
+      case CLEAR_OTHERSPOSTS:
+         return {
+            ...state,
+            othersposts: [],
          }
       case SET_LOADING:
          return {

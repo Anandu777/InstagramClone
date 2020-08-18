@@ -8,6 +8,7 @@ const Post = require('../models/post')
 // Get a particular user
 router.get('/user/:id', [auth], async (req, res) => {
    try {
+      let flag = false
       const user = await User.findById(req.params.id).select('-password')
       if (!user) {
          return res.status(404).json({ msg: 'User not found!' })
@@ -20,11 +21,11 @@ router.get('/user/:id', [auth], async (req, res) => {
 
       const autheticatedUser = await User.findById(req.user._id)
 
-      posts = posts.filter((post) =>
-         autheticatedUser.following.includes(post.postedBy._id)
-      )
+      if (autheticatedUser.following.includes(user._id)) {
+         flag = true
+      }
 
-      res.json({ user, posts, postsCount })
+      res.json({ user, posts, postsCount, flag })
    } catch (err) {
       console.error(err.message)
       res.status(500).send()

@@ -6,55 +6,21 @@ import {
    ALLPOSTS,
    SET_LOADING,
    REMOVE_LOADING,
+   CLEAR_MYPOSTS,
+   CLEAR_OTHERSPOSTS,
 } from '../../actions/actionTypes'
 import Container from '@material-ui/core/Container'
 import Card from '@material-ui/core/Card'
 import M from 'materialize-css'
 import Spinner from '../Spinner'
-import { makeStyles } from '@material-ui/core/styles'
-import Modal from '@material-ui/core/Modal'
-import Backdrop from '@material-ui/core/Backdrop'
-import Fade from '@material-ui/core/Fade'
-
-const useStyles = makeStyles((theme) => ({
-   modal: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-   },
-   paper: {
-      backgroundColor: theme.palette.background.paper,
-      border: '2px solid #000',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-   },
-}))
 
 const Home = () => {
    const { state, dispatch } = useContext(UserContext)
    const [data, setData] = useState([])
-   const classes = useStyles()
-   const [open, setOpen] = useState(false)
-   const [postOpen, setPostOpen] = useState(false)
+
    useEffect(() => {
       getAllPosts()
    }, [])
-
-   const handleOpen = () => {
-      setOpen(true)
-   }
-
-   const handleClose = () => {
-      setOpen(false)
-   }
-
-   const handlePostOpen = () => {
-      setPostOpen(true)
-   }
-
-   const handlePostClose = () => {
-      setPostOpen(false)
-   }
 
    async function getAllPosts() {
       dispatch({
@@ -72,6 +38,12 @@ const Home = () => {
          dispatch({
             type: ALLPOSTS,
             payload: res.data.posts,
+         })
+         dispatch({
+            type: CLEAR_MYPOSTS,
+         })
+         dispatch({
+            type: CLEAR_OTHERSPOSTS,
          })
          dispatch({
             type: REMOVE_LOADING,
@@ -94,8 +66,19 @@ const Home = () => {
 
       const body = JSON.stringify({ postId: id })
       try {
-         await axios.put('/like', body, config)
-         getAllPosts()
+         const res = await axios.put('/like', body, config)
+         const newData = data.map((item) => {
+            if (item._id === res.data._id) {
+               return res.data
+            } else {
+               return item
+            }
+         })
+         setData(newData)
+         dispatch({
+            type: ALLPOSTS,
+            payload: newData,
+         })
       } catch (err) {
          console.error(err)
       }
@@ -112,8 +95,19 @@ const Home = () => {
 
       const body = JSON.stringify({ postId: id })
       try {
-         await axios.put('/unlike', body, config)
-         getAllPosts()
+         const res = await axios.put('/unlike', body, config)
+         const newData = data.map((item) => {
+            if (item._id === res.data._id) {
+               return res.data
+            } else {
+               return item
+            }
+         })
+         setData(newData)
+         dispatch({
+            type: ALLPOSTS,
+            payload: newData,
+         })
       } catch (err) {
          console.error(err)
       }
@@ -130,8 +124,20 @@ const Home = () => {
          }
 
          const body = JSON.stringify({ postId, text })
-         await axios.put('/comment', body, config)
-         getAllPosts()
+         const res = await axios.put('/comment', body, config)
+         const newData = data.map((item) => {
+            if (item._id === res.data._id) {
+               return res.data
+            } else {
+               return item
+            }
+         })
+         setData(newData)
+         dispatch({
+            type: ALLPOSTS,
+            payload: newData,
+         })
+
          M.toast({
             html: 'Commented!',
             classes: '#43a047 green darken-1',
@@ -142,7 +148,6 @@ const Home = () => {
    }
 
    const deletePost = async (postId) => {
-      handlePostClose()
       try {
          const token = localStorage.getItem('jwt')
          const config = {
@@ -150,8 +155,14 @@ const Home = () => {
                'x-auth-token': token,
             },
          }
-         await axios.delete(`/deletepost/${postId}`, config)
-         getAllPosts()
+         const res = await axios.delete(`/deletepost/${postId}`, config)
+         const newData = data.filter((item) => item._id !== res.data._id)
+         setData(newData)
+         dispatch({
+            type: ALLPOSTS,
+            payload: newData,
+         })
+
          M.toast({
             html: 'Post deleted!',
             classes: '#43a047 green darken-1',
@@ -162,7 +173,6 @@ const Home = () => {
    }
 
    const deleteComment = async (postId, commentId) => {
-      handleClose()
       try {
          const token = localStorage.getItem('jwt')
          const config = {
@@ -170,8 +180,23 @@ const Home = () => {
                'x-auth-token': token,
             },
          }
-         await axios.delete(`/deletecomment/${postId}/${commentId}`, config)
-         getAllPosts()
+         const res = await axios.delete(
+            `/deletecomment/${postId}/${commentId}`,
+            config
+         )
+         const newData = data.map((item) => {
+            if (item._id === res.data._id) {
+               return res.data
+            } else {
+               return item
+            }
+         })
+         setData(newData)
+         dispatch({
+            type: ALLPOSTS,
+            payload: newData,
+         })
+
          M.toast({
             html: 'Comment deleted!',
             classes: '#43a047 green darken-1',

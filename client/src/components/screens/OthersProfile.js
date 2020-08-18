@@ -2,7 +2,12 @@ import React, { useEffect, useState, useContext, Fragment } from 'react'
 import { UserContext } from '../../App'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import { REMOVE_LOADING, SET_LOADING } from '../../actions/actionTypes'
+import {
+   REMOVE_LOADING,
+   SET_LOADING,
+   CLEAR_MYPOSTS,
+   OTHERSPOSTS,
+} from '../../actions/actionTypes'
 import Container from '@material-ui/core/Container'
 import Spinner from '../Spinner'
 
@@ -27,7 +32,25 @@ const OthersProfile = () => {
       }
       try {
          const res = await axios.get(`/user/${userId}`, config)
-         setProfile(res.data)
+         if (res.data.flag) {
+            setProfile(res.data)
+         } else {
+            setProfile({
+               ...profile,
+               user: res.data.user,
+               posts: [],
+               postsCount: res.data.postsCount,
+               flag: false,
+            })
+         }
+
+         dispatch({
+            type: OTHERSPOSTS,
+            payload: res.data.posts,
+         })
+         dispatch({
+            type: CLEAR_MYPOSTS,
+         })
          dispatch({
             type: REMOVE_LOADING,
          })
@@ -50,10 +73,16 @@ const OthersProfile = () => {
       const body = JSON.stringify({ followId })
 
       try {
-         await axios.patch('/follow', body, config)
-         getUserDetails()
+         const res = await axios.patch('/follow', body, config)
+
+         setProfile({
+            ...profile,
+            user: res.data,
+            posts: state.othersposts,
+            flag: true,
+         })
       } catch (err) {
-         console.error(err.response.data)
+         console.error(err.response)
       }
    }
 
@@ -69,8 +98,14 @@ const OthersProfile = () => {
       const body = JSON.stringify({ unfollowId })
 
       try {
-         await axios.patch('/unfollow', body, config)
-         getUserDetails()
+         const res = await axios.patch('/unfollow', body, config)
+
+         setProfile({
+            ...profile,
+            user: res.data,
+            posts: [],
+            flag: false,
+         })
       } catch (err) {
          console.error(err.response.data)
       }

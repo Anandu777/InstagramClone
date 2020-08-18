@@ -6,6 +6,7 @@ import {
    REMOVE_LOADING,
    MYPOSTS,
    USER,
+   CLEAR_OTHERSPOSTS,
 } from '../../actions/actionTypes'
 import Container from '@material-ui/core/Container'
 import Spinner from '../Spinner'
@@ -36,6 +37,9 @@ const Profile = () => {
          dispatch({
             type: MYPOSTS,
             payload: res.data.myPost,
+         })
+         dispatch({
+            type: CLEAR_OTHERSPOSTS,
          })
          dispatch({
             type: REMOVE_LOADING,

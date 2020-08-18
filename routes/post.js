@@ -39,7 +39,7 @@ router.post(
    }
 )
 
-// Get all posts
+// Get all posts of following users
 router.get('/allpost', [auth], async (req, res) => {
    try {
       let posts = await Post.find()
@@ -88,10 +88,19 @@ router.put('/like', [auth], async (req, res) => {
       if (post.likes.includes(req.user._id)) {
          return res.status(400).json({ msg: 'Post already liked' })
       }
-      post.likes.unshift(req.user._id)
-      await post.save()
 
-      res.json({ msg: 'Liked!' })
+      // post.likes.unshift(req.user._id)
+      // await post.save()
+
+      post = await Post.findByIdAndUpdate(
+         req.body.postId,
+         { $push: { likes: req.user._id } },
+         { new: true }
+      )
+         .populate('postedBy', ['_id', 'name'])
+         .populate('comments.postedBy', ['_id', 'name'])
+
+      res.json(post)
    } catch (err) {
       console.error(err.message)
       res.status(500).send()
@@ -107,12 +116,21 @@ router.put('/unlike', [auth], async (req, res) => {
       if (!post.likes.includes(req.user._id)) {
          return res.status(400).json({ msg: 'Post not liked' })
       }
-      post.likes = post.likes.filter(
-         (like) => like.toString() !== req.user._id.toString()
-      )
-      await post.save()
 
-      res.json({ msg: 'Unliked!' })
+      // post.likes = post.likes.filter(
+      //    (like) => like.toString() !== req.user._id.toString()
+      // )
+      // await post.save()
+
+      post = await Post.findByIdAndUpdate(
+         req.body.postId,
+         { $pull: { likes: req.user._id } },
+         { new: true }
+      )
+         .populate('postedBy', ['_id', 'name'])
+         .populate('comments.postedBy', ['_id', 'name'])
+
+      res.json(post)
    } catch (err) {
       console.error(err.message)
       res.status(500).send()
@@ -126,10 +144,18 @@ router.put('/comment', [auth], async (req, res) => {
          text: req.body.text,
          postedBy: req.user._id,
       }
-      let post = await Post.findById(req.body.postId)
+      // let post = await Post.findById(req.body.postId)
 
-      post.comments.push(comment)
-      await post.save()
+      // post.comments.push(comment)
+      // await post.save()
+
+      const post = await Post.findByIdAndUpdate(
+         req.body.postId,
+         { $push: { comments: comment } },
+         { new: true }
+      )
+         .populate('postedBy', ['_id', 'name'])
+         .populate('comments.postedBy', ['_id', 'name'])
 
       res.json(post)
    } catch (err) {
@@ -152,7 +178,7 @@ router.delete('/deletepost/:postId', [auth], async (req, res) => {
       }
       await post.remove()
 
-      res.json({ msg: 'Post deleted!' })
+      res.json(post)
    } catch (err) {
       console.error(err.message)
       res.status(500).send()
@@ -162,7 +188,7 @@ router.delete('/deletepost/:postId', [auth], async (req, res) => {
 // Delete comment
 router.delete('/deletecomment/:postId/:commentId', [auth], async (req, res) => {
    try {
-      const post = await Post.findById(req.params.postId)
+      let post = await Post.findById(req.params.postId)
 
       if (!post) {
          return res.status(404).json({ msg: 'Post not found' })
@@ -186,12 +212,21 @@ router.delete('/deletecomment/:postId/:commentId', [auth], async (req, res) => {
          return res.status(404).json({ msg: 'User not authorized' })
       }
 
-      post.comments = post.comments.filter(
-         ({ _id }) => _id.toString() !== req.params.commentId.toString()
-      )
+      // post.comments = post.comments.filter(
+      //    ({ _id }) => _id.toString() !== req.params.commentId.toString()
+      // )
 
-      await post.save()
-      res.json({ msg: 'Comment deleted!' })
+      // await post.save()
+
+      post = await Post.findByIdAndUpdate(
+         req.params.postId,
+         { $pull: { comments: comment } },
+         { new: true }
+      )
+         .populate('postedBy', ['_id', 'name'])
+         .populate('comments.postedBy', ['_id', 'name'])
+
+      res.json(post)
    } catch (err) {
       console.error(err.message)
       res.status(500).send()
@@ -201,7 +236,18 @@ router.delete('/deletecomment/:postId/:commentId', [auth], async (req, res) => {
 // Follow
 router.patch('/follow', [auth], async (req, res) => {
    try {
-      let user = await User.findById(req.body.followId)
+      let user = await User.findById(req.user._id)
+
+      // Check if the user is already a follower
+
+      if (user.following.includes(req.body.followId)) {
+         return res.status(400).json({ msg: 'User is already a follower' })
+      }
+
+      user.following.unshift(req.body.followId)
+      await user.save()
+
+      user = await User.findById(req.body.followId)
 
       // Check if the user has already been followed
 
@@ -212,17 +258,7 @@ router.patch('/follow', [auth], async (req, res) => {
       user.followers.unshift(req.user._id)
       await user.save()
 
-      user = await User.findById(req.user._id)
-
-      // Check if the user is already a follower
-
-      if (user.following.includes(req.body.followId)) {
-         return res.status(400).json({ msg: 'User is already a follower' })
-      }
-
-      user.following.unshift(req.body.followId)
-      await user.save()
-      res.json({ msg: 'Following and followers updated!' })
+      res.json(user)
    } catch (err) {
       console.error(err.message)
       res.status(500).send()
@@ -232,7 +268,20 @@ router.patch('/follow', [auth], async (req, res) => {
 // Unfollow
 router.patch('/unfollow', [auth], async (req, res) => {
    try {
-      let user = await User.findById(req.body.unfollowId)
+      let user = await User.findById(req.user._id)
+
+      // Check if the user is already a follower
+
+      if (!user.following.includes(req.body.unfollowId)) {
+         return res.status(400).json({ msg: 'User is not a follower' })
+      }
+      user.following = user.following.filter(
+         (f) => f.toString() !== req.body.unfollowId.toString()
+      )
+
+      await user.save()
+
+      user = await User.findById(req.body.unfollowId)
 
       // Check if the user has already been followed
 
@@ -245,20 +294,7 @@ router.patch('/unfollow', [auth], async (req, res) => {
       )
 
       await user.save()
-
-      user = await User.findById(req.user._id)
-
-      // Check if the user is already a follower
-
-      if (!user.following.includes(req.body.unfollowId)) {
-         return res.status(400).json({ msg: 'User is not a follower' })
-      }
-      user.following = user.following.filter(
-         (f) => f.toString() !== req.body.unfollowId.toString()
-      )
-
-      await user.save()
-      res.json({ msg: 'Following and followers updated!' })
+      res.json(user)
    } catch (err) {
       console.error(err.message)
       res.status(500).send()

@@ -8,7 +8,6 @@ import Card from '@material-ui/core/Card'
 import { USER, TOKEN } from '../../actions/actionTypes'
 
 const Signup = () => {
-   console.log('Signup.js')
    const { state, dispatch } = useContext(UserContext)
    const history = useHistory()
 
