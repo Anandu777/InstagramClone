@@ -8,7 +8,6 @@ const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../config/keys')
 const auth = require('../middleware/auth')
 const { sendWelcomeEmail, sendResetPasswordMail } = require('../emails/account')
-const { findOne } = require('../models/user')
 
 // Register
 router.post(

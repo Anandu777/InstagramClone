@@ -242,6 +242,7 @@ const Home = () => {
                                              display: 'block',
                                              marginLeft: 'auto',
                                              marginRight: 'auto',
+                                             // objectFit: 'cover',
                                           }}
                                           className='home-image'
                                           src={item.photo}

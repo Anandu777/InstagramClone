@@ -100,6 +100,7 @@ const Profile = () => {
                                        width: '140px',
                                        height: '140px',
                                        borderRadius: '50%',
+                                       objectFit: 'cover',
                                     }}
                                     src={state.user.photo}
                                     alt='Person'

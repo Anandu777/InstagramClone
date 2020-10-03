@@ -131,6 +131,7 @@ const OthersProfile = () => {
                                     width: '140px',
                                     height: '140px',
                                     borderRadius: '50%',
+                                    objectFit: 'cover',
                                  }}
                                  src={profile.user && profile.user.photo}
                                  alt='Person'
